@@ -25,5 +25,14 @@ namespace BespokeWeb.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public IActionResult Create(Category category)
+        {
+            _dbContext.Categories.Add(category);
+            _dbContext.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
     }
 }
