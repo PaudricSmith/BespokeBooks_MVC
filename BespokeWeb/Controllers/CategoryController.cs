@@ -74,5 +74,37 @@ namespace BespokeWeb.Controllers
 
             return View();
         }
+
+        public IActionResult Delete(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
+            Category? categoryFromDb = _dbContext.Categories.Find(id);
+            if (categoryFromDb == null)
+            {
+                return NotFound();
+            }
+
+            return View(categoryFromDb);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public IActionResult DeletePost(int? id)
+        {
+            Category? categoryFromDb = _dbContext.Categories.Find(id);
+            if (categoryFromDb == null)
+            {
+                return NotFound();
+            }
+
+            _dbContext.Categories.Remove(categoryFromDb);
+            _dbContext.SaveChanges();
+
+            return RedirectToAction("Index");
+            
+        }
     }
 }
