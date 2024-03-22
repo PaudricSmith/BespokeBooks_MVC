@@ -39,6 +39,8 @@ namespace BespokeWeb.Controllers
                 _dbContext.Categories.Add(category);
                 _dbContext.SaveChanges();
 
+                TempData["Success"] = "Category created successfully!";
+
                 return RedirectToAction("Index");
             }
 
@@ -68,6 +70,8 @@ namespace BespokeWeb.Controllers
             {
                 _dbContext.Categories.Update(category);
                 _dbContext.SaveChanges();
+
+                TempData["Success"] = "Category updated successfully!";
 
                 return RedirectToAction("Index");
             }
@@ -102,6 +106,8 @@ namespace BespokeWeb.Controllers
 
             _dbContext.Categories.Remove(categoryFromDb);
             _dbContext.SaveChanges();
+
+            TempData["Success"] = "Category deleted successfully!";
 
             return RedirectToAction("Index");
             
