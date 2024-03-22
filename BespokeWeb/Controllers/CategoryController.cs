@@ -1,6 +1,7 @@
 ﻿using BespokeWeb.Data;
 using BespokeWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace BespokeWeb.Controllers
 {
@@ -29,10 +30,19 @@ namespace BespokeWeb.Controllers
         [HttpPost]
         public IActionResult Create(Category category)
         {
-            _dbContext.Categories.Add(category);
-            _dbContext.SaveChanges();
+            //if (category.Name == category.DisplayOrder.ToString()) 
+            //{
+            //    ModelState.AddModelError("Name", "The Name cannot match the Display Order");
+            //}
+            if (ModelState.IsValid) 
+            {
+                _dbContext.Categories.Add(category);
+                _dbContext.SaveChanges();
 
-            return RedirectToAction("Index");
+                return RedirectToAction("Index");
+            }
+
+            return View();
         }
     }
 }
