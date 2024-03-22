@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace BespokeWeb.Migrations
+namespace Bespoke.DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class AddCategoryTableToDb : Migration

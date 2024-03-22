@@ -1,4 +1,4 @@
-using BespokeWeb.Data;
+using Bespoke.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

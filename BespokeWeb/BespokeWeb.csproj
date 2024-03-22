@@ -15,4 +15,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Bespoke.DataAccess\Bespoke.DataAccess.csproj" />
+  </ItemGroup>
+
 </Project>

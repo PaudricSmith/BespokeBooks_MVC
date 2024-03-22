@@ -1,7 +1,7 @@
-﻿using BespokeWeb.Models;
+﻿using Bespoke.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace BespokeWeb.Data
+namespace Bespoke.DataAccess.Data
 {
     public class ApplicationDbContext : DbContext
     {

@@ -1,5 +1,5 @@
-﻿using BespokeWeb.Data;
-using BespokeWeb.Models;
+﻿using Bespoke.DataAccess.Data;
+using Bespoke.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 

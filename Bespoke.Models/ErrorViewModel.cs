@@ -1,4 +1,4 @@
-namespace BespokeWeb.Models
+namespace Bespoke.Models
 {
     public class ErrorViewModel
     {
