@@ -1,24 +1,23 @@
-﻿using Bespoke.DataAccess.Data;
+﻿using Bespoke.DataAccess.Repository.IRepository;
 using Bespoke.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace BespokeWeb.Controllers
 {
     [Controller]
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly ICategoryRepository _categoryRepo;
 
-        public CategoryController(ApplicationDbContext dbContext)
+        public CategoryController(ICategoryRepository categoryRepository)
         {
-            _dbContext = dbContext;
+            _categoryRepo = categoryRepository;
         }
 
 
         public IActionResult Index()
         {
-            List<Category> objCategoryList = _dbContext.Categories.ToList();
+            List<Category> objCategoryList = _categoryRepo.GetAll().ToList();
             return View(objCategoryList);
         }
 
@@ -36,8 +35,8 @@ namespace BespokeWeb.Controllers
             }
             if (ModelState.IsValid) 
             {
-                _dbContext.Categories.Add(category);
-                _dbContext.SaveChanges();
+                _categoryRepo.Add(category);
+                _categoryRepo.Save();
 
                 TempData["Success"] = "Category created successfully!";
 
@@ -54,7 +53,7 @@ namespace BespokeWeb.Controllers
                 return NotFound();
             }
 
-            Category categoryFromDb = _dbContext.Categories.Find(id);
+            Category categoryFromDb = _categoryRepo.Get(c => c.Id == id);
             if (categoryFromDb == null) 
             {
                 return NotFound();
@@ -68,8 +67,8 @@ namespace BespokeWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                _dbContext.Categories.Update(category);
-                _dbContext.SaveChanges();
+                _categoryRepo.Update(category);
+                _categoryRepo.Save();
 
                 TempData["Success"] = "Category updated successfully!";
 
@@ -86,7 +85,7 @@ namespace BespokeWeb.Controllers
                 return NotFound();
             }
 
-            Category? categoryFromDb = _dbContext.Categories.Find(id);
+            Category? categoryFromDb = _categoryRepo.Get(c => c.Id == id);
             if (categoryFromDb == null)
             {
                 return NotFound();
@@ -98,14 +97,14 @@ namespace BespokeWeb.Controllers
         [HttpPost, ActionName("Delete")]
         public IActionResult DeletePost(int? id)
         {
-            Category? categoryFromDb = _dbContext.Categories.Find(id);
+            Category? categoryFromDb = _categoryRepo.Get(c => c.Id == id);
             if (categoryFromDb == null)
             {
                 return NotFound();
             }
 
-            _dbContext.Categories.Remove(categoryFromDb);
-            _dbContext.SaveChanges();
+            _categoryRepo.Remove(categoryFromDb);
+            _categoryRepo.Save();
 
             TempData["Success"] = "Category deleted successfully!";
 
