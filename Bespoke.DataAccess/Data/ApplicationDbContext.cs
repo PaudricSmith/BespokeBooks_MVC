@@ -1,7 +1,7 @@
-﻿using Bespoke.Models;
+﻿using BespokeBooks.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Bespoke.DataAccess.Data
+namespace BespokeBooks.DataAccess.Data
 {
     public class ApplicationDbContext : DbContext
     {

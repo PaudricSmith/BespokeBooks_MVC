@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Bespoke.Models
+namespace BespokeBooks.Models
 {
     public class Category
     {

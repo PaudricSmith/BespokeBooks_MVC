@@ -1,14 +1,9 @@
-﻿using Bespoke.DataAccess.Data;
-using Bespoke.DataAccess.Repository.IRepository;
-using Bespoke.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BespokeBooks.DataAccess.Data;
+using BespokeBooks.Models;
+using BespokeBooks.DataAccess.Repository.IRepository;
 
-namespace Bespoke.DataAccess.Repository
+
+namespace BespokeBooks.DataAccess.Repository
 {
     public class CategoryRepository : Repository<Category>, ICategoryRepository
     {

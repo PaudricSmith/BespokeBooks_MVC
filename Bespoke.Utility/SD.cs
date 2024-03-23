@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bespoke.Utility
+namespace BespokeBooks.Utility
 {
     public static class SD
     {

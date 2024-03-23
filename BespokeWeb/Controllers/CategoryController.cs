@@ -1,8 +1,8 @@
-﻿using Bespoke.DataAccess.Repository.IRepository;
-using Bespoke.Models;
+﻿using BespokeBooks.Models;
+using BespokeBooks.DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BespokeWeb.Controllers
+namespace BespokeBooksWeb.Controllers
 {
     [Controller]
     public class CategoryController : Controller

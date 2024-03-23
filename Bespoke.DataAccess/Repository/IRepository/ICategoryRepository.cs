@@ -1,6 +1,6 @@
-﻿using Bespoke.Models;
+﻿using BespokeBooks.Models;
 
-namespace Bespoke.DataAccess.Repository.IRepository
+namespace BespokeBooks.DataAccess.Repository.IRepository
 {
     public interface ICategoryRepository : IRepository<Category>
     {

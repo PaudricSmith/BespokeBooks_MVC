@@ -1,9 +1,9 @@
-﻿using Bespoke.DataAccess.Data;
-using Bespoke.DataAccess.Repository.IRepository;
+﻿using BespokeBooks.DataAccess.Data;
+using BespokeBooks.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace Bespoke.DataAccess.Repository
+namespace BespokeBooks.DataAccess.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {

@@ -1,6 +1,6 @@
-using Bespoke.DataAccess.Data;
-using Bespoke.DataAccess.Repository;
-using Bespoke.DataAccess.Repository.IRepository;
+using BespokeBooks.DataAccess.Data;
+using BespokeBooks.DataAccess.Repository;
+using BespokeBooks.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

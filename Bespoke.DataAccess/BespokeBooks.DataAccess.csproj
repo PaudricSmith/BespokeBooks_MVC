@@ -16,8 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bespoke.Models\Bespoke.Models.csproj" />
-    <ProjectReference Include="..\Bespoke.Utility\Bespoke.Utility.csproj" />
+    <ProjectReference Include="..\Bespoke.Models\BespokeBooks.Models.csproj" />
+    <ProjectReference Include="..\Bespoke.Utility\BespokeBooks.Utility.csproj" />
   </ItemGroup>
+
+ 
 
 </Project>

@@ -1,8 +1,8 @@
-using Bespoke.Models;
+using BespokeBooks.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace BespokeWeb.Controllers
+namespace BespokeBooksWeb.Controllers
 {
     public class HomeController : Controller
     {
