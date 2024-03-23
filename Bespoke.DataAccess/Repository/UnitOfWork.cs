@@ -12,11 +12,13 @@ namespace BespokeBooks.DataAccess.Repository
     {
         private ApplicationDbContext _dbContext;
         public ICategoryRepository CategoryRepo { get; private set; }
-    
+        public IProductRepository ProductRepo { get; private set; }
+
         public UnitOfWork(ApplicationDbContext dbContext) 
         {
             _dbContext = dbContext;
             CategoryRepo = new CategoryRepository(_dbContext);
+            ProductRepo = new ProductRepository(_dbContext);
         }
 
 
