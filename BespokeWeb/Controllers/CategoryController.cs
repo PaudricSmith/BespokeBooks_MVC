@@ -7,17 +7,17 @@ namespace BespokeBooksWeb.Controllers
     [Controller]
     public class CategoryController : Controller
     {
-        private readonly ICategoryRepository _categoryRepo;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CategoryController(ICategoryRepository categoryRepository)
+        public CategoryController(IUnitOfWork unitOfWork)
         {
-            _categoryRepo = categoryRepository;
+            _unitOfWork = unitOfWork;
         }
 
 
         public IActionResult Index()
         {
-            List<Category> objCategoryList = _categoryRepo.GetAll().ToList();
+            List<Category> objCategoryList = _unitOfWork.CategoryRepo.GetAll().ToList();
             return View(objCategoryList);
         }
 
@@ -35,8 +35,8 @@ namespace BespokeBooksWeb.Controllers
             }
             if (ModelState.IsValid) 
             {
-                _categoryRepo.Add(category);
-                _categoryRepo.Save();
+                _unitOfWork.CategoryRepo.Add(category);
+                _unitOfWork.Save();
 
                 TempData["Success"] = "Category created successfully!";
 
@@ -53,7 +53,7 @@ namespace BespokeBooksWeb.Controllers
                 return NotFound();
             }
 
-            Category categoryFromDb = _categoryRepo.Get(c => c.Id == id);
+            Category categoryFromDb = _unitOfWork.CategoryRepo.Get(c => c.Id == id);
             if (categoryFromDb == null) 
             {
                 return NotFound();
@@ -67,8 +67,8 @@ namespace BespokeBooksWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                _categoryRepo.Update(category);
-                _categoryRepo.Save();
+                _unitOfWork.CategoryRepo.Update(category);
+                _unitOfWork.Save();
 
                 TempData["Success"] = "Category updated successfully!";
 
@@ -85,7 +85,7 @@ namespace BespokeBooksWeb.Controllers
                 return NotFound();
             }
 
-            Category? categoryFromDb = _categoryRepo.Get(c => c.Id == id);
+            Category? categoryFromDb = _unitOfWork.CategoryRepo.Get(c => c.Id == id);
             if (categoryFromDb == null)
             {
                 return NotFound();
@@ -97,14 +97,14 @@ namespace BespokeBooksWeb.Controllers
         [HttpPost, ActionName("Delete")]
         public IActionResult DeletePost(int? id)
         {
-            Category? categoryFromDb = _categoryRepo.Get(c => c.Id == id);
+            Category? categoryFromDb = _unitOfWork.CategoryRepo.Get(c => c.Id == id);
             if (categoryFromDb == null)
             {
                 return NotFound();
             }
 
-            _categoryRepo.Remove(categoryFromDb);
-            _categoryRepo.Save();
+            _unitOfWork.CategoryRepo.Remove(categoryFromDb);
+            _unitOfWork.Save();
 
             TempData["Success"] = "Category deleted successfully!";
 
