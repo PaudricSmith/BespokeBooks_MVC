@@ -2,9 +2,9 @@
 using BespokeBooks.DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BespokeBooksWeb.Controllers
+namespace BespokeBooksWeb.Areas.Admin.Controllers
 {
-    [Controller]
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -33,7 +33,7 @@ namespace BespokeBooksWeb.Controllers
             {
                 ModelState.AddModelError("Name", "The Name cannot match the Display Order");
             }
-            if (ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
                 _unitOfWork.CategoryRepo.Add(category);
                 _unitOfWork.Save();
@@ -48,13 +48,13 @@ namespace BespokeBooksWeb.Controllers
 
         public IActionResult Edit(int? id)
         {
-            if (id == null || id == 0) 
+            if (id == null || id == 0)
             {
                 return NotFound();
             }
 
             Category categoryFromDb = _unitOfWork.CategoryRepo.Get(c => c.Id == id);
-            if (categoryFromDb == null) 
+            if (categoryFromDb == null)
             {
                 return NotFound();
             }
@@ -109,7 +109,7 @@ namespace BespokeBooksWeb.Controllers
             TempData["Success"] = "Category deleted successfully!";
 
             return RedirectToAction("Index");
-            
+
         }
     }
 }
