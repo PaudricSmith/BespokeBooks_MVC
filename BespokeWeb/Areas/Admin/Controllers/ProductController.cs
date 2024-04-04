@@ -1,6 +1,9 @@
 ﻿using BespokeBooks.Models;
 using BespokeBooks.DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using BespokeBooks.Models.ViewModels;
 
 namespace BespokeBooksWeb.Areas.Admin.Controllers
 {
@@ -18,28 +21,50 @@ namespace BespokeBooksWeb.Areas.Admin.Controllers
         public IActionResult Index()
         {
             List<Product> objProductList = _unitOfWork.ProductRepo.GetAll().ToList();
+
             return View(objProductList);
         }
 
         public IActionResult Create()
         {
-            return View();
+            ProductVM productVM = new()
+            {
+                CategoryList = _unitOfWork.CategoryRepo
+                .GetAll().Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.Id.ToString()
+                }),
+
+                Product = new Product()
+            };
+
+            return View(productVM);
         }
 
         [HttpPost]
-        public IActionResult Create(Product product)
+        public IActionResult Create(ProductVM productVM)
         {
             if (ModelState.IsValid)
             {
-                _unitOfWork.ProductRepo.Add(product);
+                _unitOfWork.ProductRepo.Add(productVM.Product);
                 _unitOfWork.Save();
 
                 TempData["Success"] = "Product created successfully!";
 
                 return RedirectToAction("Index");
             }
+            else
+            {
+                productVM.CategoryList = _unitOfWork.CategoryRepo
+                .GetAll().Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.Id.ToString()
+                });
 
-            return View();
+                return View(productVM);
+            }
         }
 
         public IActionResult Edit(int? id)
