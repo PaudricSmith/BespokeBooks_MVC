@@ -17,7 +17,25 @@ namespace BespokeBooks.DataAccess.Repository
 
         public void Update(Product product)
         {
-            _dbContext.Products.Update(product);
+            var productFromDatabase = _dbContext.Products.FirstOrDefault(p => p.Id == product.Id);
+
+            if (productFromDatabase != null) 
+            {
+                productFromDatabase.Title = product.Title;
+                productFromDatabase.ISBN = product.ISBN;
+                productFromDatabase.Price = product.Price;
+                productFromDatabase.Price50 = product.Price50;
+                productFromDatabase.ListPrice = product.ListPrice;
+                productFromDatabase.Price100 = product.Price100;
+                productFromDatabase.Description = product.Description;
+                productFromDatabase.CategoryId = product.CategoryId;
+                productFromDatabase.Author = product.Author;
+
+                if (productFromDatabase.ImageUrl != null) 
+                {
+                    productFromDatabase.ImageUrl = product.ImageUrl;
+                }
+            }
         }
     }
 }
