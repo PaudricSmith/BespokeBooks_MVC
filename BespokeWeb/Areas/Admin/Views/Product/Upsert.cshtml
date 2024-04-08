@@ -20,10 +20,9 @@
                     <label asp-for="Product.Title" class="ms-2"></label>
                     <span asp-validation-for="Product.Title" class="text-danger"></span>
                 </div>
-                <div class="form-floating py-2 col-12">
-                    <input asp-for="Product.Description" class="form-control border-0 shadow" />
-                    <label asp-for="Product.Description" class="ms-2"></label>
-                    <span asp-validation-for="Product.Description" class="text-danger"></span>
+                <div class="py-2 col-12">
+                    <label asp-for="Product.Description" class="ms-2 text-muted"></label>
+                    <textarea asp-for="Product.Description" class="form-control border-0 shadow"></textarea>
                 </div>
                 <div class="form-floating py-2 col-12">
                     <input asp-for="Product.ISBN" class="form-control border-0 shadow" />
@@ -79,7 +78,7 @@
                         }
                     </div>
                     <div class="col-6 col-md-3">
-                        <a asp-controller="Product" asp-action="Index" class="btn btn-outline-primary border form-control">
+                        <a asp-controller="Product" asp-action="Index" class="btn btn-secondary border form-control">
                             <i class="bi bi-backspace"></i> Back to List
                         </a>
                     </div>
@@ -91,6 +90,13 @@
 </div>
 
 @section scripts {
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons lists | table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align lineheight | numlist bullist indent outdent',
+        });
+    </script>
     @{
         <partial name="_ValidationScriptsPartial" />
     }
