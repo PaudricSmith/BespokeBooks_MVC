@@ -22,7 +22,7 @@ namespace BespokeBooksWeb.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            List<Product> objProductList = _unitOfWork.ProductRepo.GetAll().ToList();
+            List<Product> objProductList = _unitOfWork.ProductRepo.GetAll(includeProperties : "Category").ToList();
 
             return View(objProductList);
         }
