@@ -113,40 +113,6 @@ namespace BespokeBooksWeb.Areas.Admin.Controllers
             }
         }
 
-        public IActionResult Delete(int? id)
-        {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-
-            Product? productFromDb = _unitOfWork.ProductRepo.Get(c => c.Id == id);
-            if (productFromDb == null)
-            {
-                return NotFound();
-            }
-
-            return View(productFromDb);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePost(int? id)
-        {
-            Product? productFromDb = _unitOfWork.ProductRepo.Get(c => c.Id == id);
-            if (productFromDb == null)
-            {
-                return NotFound();
-            }
-
-            _unitOfWork.ProductRepo.Remove(productFromDb);
-            _unitOfWork.Save();
-
-            TempData["Success"] = "Product deleted successfully!";
-
-            return RedirectToAction("Index");
-
-        }
-
 
         #region API CALLS
 
@@ -155,6 +121,29 @@ namespace BespokeBooksWeb.Areas.Admin.Controllers
         {
             List<Product> productList = _unitOfWork.ProductRepo.GetAll(includeProperties: "Category").ToList();
             return Json(new { data = productList });
+        }
+
+        [HttpDelete]
+        public IActionResult Delete(int? id)
+        {
+            var productToBeDeleted = _unitOfWork.ProductRepo.Get(c => c.Id == id);
+            if (productToBeDeleted == null)
+            {
+                return Json(new { success = false, message = "Error while deleting!" });
+            }
+
+            // Delete the old image
+            var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, productToBeDeleted.ImageUrl.TrimStart('\\'));
+
+            if (System.IO.File.Exists(oldImagePath))
+            {
+                System.IO.File.Delete(oldImagePath);
+            }
+
+            _unitOfWork.ProductRepo.Remove(productToBeDeleted);
+            _unitOfWork.Save();
+
+            return Json(new { success = true, message = "Product deleted successfully!" });
         }
 
         #endregion
