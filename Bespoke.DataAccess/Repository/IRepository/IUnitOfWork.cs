@@ -6,6 +6,7 @@ namespace BespokeBooks.DataAccess.Repository.IRepository
     {
         ICategoryRepository CategoryRepo { get; }
         IProductRepository ProductRepo { get; }
+        ICompanyRepository CompanyRepo { get; }
 
         void Save();
     }

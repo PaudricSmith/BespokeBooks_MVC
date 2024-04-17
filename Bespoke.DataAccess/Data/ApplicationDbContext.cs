@@ -13,6 +13,7 @@ namespace BespokeBooks.DataAccess.Data
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Company> Companies { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -109,6 +110,39 @@ namespace BespokeBooks.DataAccess.Data
                     Price100 = 20,
                     CategoryId = 1,
                     ImageUrl = ""
+                }
+                );
+
+            modelBuilder.Entity<Company>().HasData(
+                new Company
+                {
+                    Id = 1,
+                    Name = "Tech Solution",
+                    StreetAddress = "123 Tech St",
+                    City = "Tech City",
+                    PostalCode = "11111",
+                    State = "IL",
+                    PhoneNumber = "6669990000"
+                },
+                new Company
+                {
+                    Id = 2,
+                    Name = "Spark",
+                    StreetAddress = "999 Vid St",
+                    City = "Vid City",
+                    PostalCode = "22222",
+                    State = "IL",
+                    PhoneNumber = "7779990000"
+                },
+                new Company
+                {
+                    Id = 3,
+                    Name = "Readers Club",
+                    StreetAddress = "999 Main St",
+                    City = "Lala Land",
+                    PostalCode = "33333",
+                    State = "NY",
+                    PhoneNumber = "1113335555"
                 }
                 );
         }
