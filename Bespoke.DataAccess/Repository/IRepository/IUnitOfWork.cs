@@ -8,6 +8,7 @@ namespace BespokeBooks.DataAccess.Repository.IRepository
         IProductRepository ProductRepo { get; }
         ICompanyRepository CompanyRepo { get; }
         IShoppingCartRepository ShoppingCartRepo { get; }
+        IApplicationUserRepository ApplicationUserRepo { get; }
 
         void Save();
     }
