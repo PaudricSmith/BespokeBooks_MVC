@@ -13,6 +13,9 @@ namespace BespokeBooks.DataAccess.Repository
         public ICompanyRepository CompanyRepo { get; private set; }
         public IShoppingCartRepository ShoppingCartRepo {  get; private set; }
         public IApplicationUserRepository ApplicationUserRepo {  get; private set; }
+        public IOrderHeaderRepository OrderHeaderRepo { get; private set; }
+        public IOrderDetailRepository OrderDetailRepo { get; private set; }
+
 
         public UnitOfWork(ApplicationDbContext dbContext) 
         {
@@ -23,6 +26,8 @@ namespace BespokeBooks.DataAccess.Repository
             CompanyRepo = new CompanyRepository(_dbContext);
             ShoppingCartRepo = new ShoppingCartRepository(_dbContext);
             ApplicationUserRepo = new ApplicationUserRepository(_dbContext);
+            OrderHeaderRepo = new OrderHeaderRepository(_dbContext);
+            OrderDetailRepo = new OrderDetailRepository(_dbContext);
         }
 
 
