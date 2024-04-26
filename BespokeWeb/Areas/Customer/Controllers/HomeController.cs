@@ -1,5 +1,7 @@
 using BespokeBooks.DataAccess.Repository.IRepository;
 using BespokeBooks.Models;
+using BespokeBooks.Models.ViewModels;
+using BespokeBooks.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -21,6 +23,15 @@ namespace BespokeBooksWeb.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (claim != null)
+            {
+                HttpContext.Session.SetInt32(SD.SessionCart,
+                    _unitOfWork.ShoppingCartRepo.GetAll(s => s.ApplicationUserId == claim.Value).Count());
+            }
+            
             IEnumerable<Product> productList = _unitOfWork.ProductRepo.GetAll(includeProperties: "Category");
             return View(productList);
         }
@@ -52,17 +63,21 @@ namespace BespokeBooksWeb.Areas.Customer.Controllers
             {
                 // Shopping cart exists
                 cartFromDb.Count += shoppingCart.Count;
+                
                 _unitOfWork.ShoppingCartRepo.Update(cartFromDb);
+                _unitOfWork.Save();
             }
             else
             {
                 // Add cart record
-                _unitOfWork.ShoppingCartRepo.Add(shoppingCart); 
+                _unitOfWork.ShoppingCartRepo.Add(shoppingCart);
+                _unitOfWork.Save();
+
+                HttpContext.Session.SetInt32(SD.SessionCart, 
+                    _unitOfWork.ShoppingCartRepo.GetAll(a => a.ApplicationUserId == userId).Count());
             }
 
             TempData["success"] = "Cart updated successfully";
-
-            _unitOfWork.Save();
 
             return RedirectToAction(nameof(Index));
         }

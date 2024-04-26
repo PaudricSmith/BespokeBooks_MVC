@@ -208,10 +208,11 @@ namespace BespokeBooksWeb.Areas.Customer.Controllers
 
         public IActionResult Minus(int cartId)
         {
-            var cartFromDb = _unitOfWork.ShoppingCartRepo.Get(s => s.Id == cartId);
+            var cartFromDb = _unitOfWork.ShoppingCartRepo.Get(s => s.Id == cartId, tracked: true);
             if (cartFromDb.Count <= 1)
             {
                 // Remove from cart
+                HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCartRepo.GetAll(s => s.ApplicationUserId == cartFromDb.ApplicationUserId).Count() - 1);
                 _unitOfWork.ShoppingCartRepo.Remove(cartFromDb);
             }
             else
@@ -227,8 +228,10 @@ namespace BespokeBooksWeb.Areas.Customer.Controllers
 
         public IActionResult Remove(int cartId)
         {
-            var cartFromDb = _unitOfWork.ShoppingCartRepo.Get(s => s.Id == cartId);
+            var cartFromDb = _unitOfWork.ShoppingCartRepo.Get(s => s.Id == cartId, tracked: true);
 
+            HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCartRepo.GetAll(s => s.ApplicationUserId == cartFromDb.ApplicationUserId).Count() - 1);
+            
             _unitOfWork.ShoppingCartRepo.Remove(cartFromDb);
             _unitOfWork.Save();
 
