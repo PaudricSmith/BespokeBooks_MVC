@@ -3,6 +3,7 @@ using BespokeBooks.Models;
 using BespokeBooks.Models.ViewModels;
 using BespokeBooks.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Stripe.Checkout;
 using System.Security.Claims;
@@ -14,13 +15,15 @@ namespace BespokeBooksWeb.Areas.Customer.Controllers
     public class CartController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IEmailSender _emailSender;
 
         [BindProperty]
         public ShoppingCartVM ShoppingCartVM { get; set; }
 
-        public CartController(IUnitOfWork unitOfWork)
+        public CartController(IUnitOfWork unitOfWork, IEmailSender emailSender)
         {
             _unitOfWork = unitOfWork;
+            _emailSender = emailSender;
         }
 
         public IActionResult Index()
@@ -187,6 +190,13 @@ namespace BespokeBooksWeb.Areas.Customer.Controllers
 
                 HttpContext.Session.Clear();
             }
+
+            //// Send confirmation email
+            //_emailSender.SendEmailAsync(
+            //    orderHeader.ApplicationUser.Email, 
+            //    "New Order - Bespoke Books",
+            //    $"<p>New Order Created - {orderHeader.Id}</p>");
+
 
             List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCartRepo
                 .GetAll(s => s.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
