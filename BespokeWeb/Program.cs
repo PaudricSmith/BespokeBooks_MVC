@@ -1,4 +1,5 @@
 using BespokeBooks.DataAccess.Data;
+using BespokeBooks.DataAccess.DbInitializer;
 using BespokeBooks.DataAccess.Repository;
 using BespokeBooks.DataAccess.Repository.IRepository;
 using BespokeBooks.Utility;
@@ -39,6 +40,7 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
@@ -58,16 +60,25 @@ app.UseStaticFiles();
 StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.UseSession();
 
-app.MapRazorPages();
+SeedDatabase();
 
+app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+
+void SeedDatabase()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        dbInitializer.Initialize();
+    }
+}
