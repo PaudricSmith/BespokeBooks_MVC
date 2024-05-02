@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Authorization;
 using BespokeBooks.Utility;
 using BespokeBooks.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
+using BespokeBooks.DataAccess.Repository;
+using BespokeBooks.Models.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Identity;
 
 namespace BespokeBooksWeb.Areas.Admin.Controllers
 {
@@ -13,10 +17,12 @@ namespace BespokeBooksWeb.Areas.Admin.Controllers
     public class UserController : Controller
     {
         private readonly ApplicationDbContext _dbContext;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public UserController(ApplicationDbContext dbContext)
+        public UserController(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager)
         {
             _dbContext = dbContext;
+            _userManager = userManager;
         }
 
 
@@ -25,17 +31,81 @@ namespace BespokeBooksWeb.Areas.Admin.Controllers
             return View();
         }
 
+        public IActionResult RoleManagement(string userId)
+        {
+            string roleId = _dbContext.UserRoles.FirstOrDefault(a => a.UserId == userId).RoleId;
+
+            RoleManagementVM roleManagementVM = new RoleManagementVM()
+            {
+                ApplicationUser = _dbContext.ApplicationUsers.Include(a => a.Company).FirstOrDefault(u => u.Id == userId),
+
+                RoleList = _dbContext.Roles.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Name
+                }),
+                CompanyList = _dbContext.Companies.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
+                })
+            };
+
+            roleManagementVM.ApplicationUser.Role = _dbContext.Roles.FirstOrDefault(r => r.Id == roleId).Name;
+
+            return View(roleManagementVM);
+        }
+
+        [HttpPost]
+        public IActionResult RoleManagement(RoleManagementVM roleManagementVM)
+        {
+            string roleId = _dbContext.UserRoles.FirstOrDefault(a => a.UserId == roleManagementVM.ApplicationUser.Id).RoleId;
+            string oldRole = _dbContext.Roles.FirstOrDefault(r => r.Id == roleId).Name;
+
+            ApplicationUser applicationUser = _dbContext.ApplicationUsers.FirstOrDefault(a => a.Id == roleManagementVM.ApplicationUser.Id);
+
+
+            if (!(roleManagementVM.ApplicationUser.Role == oldRole))
+            {
+                // A role was updated
+                if (roleManagementVM.ApplicationUser.Role == SD.Role_Company)
+                {
+                    applicationUser.CompanyId = roleManagementVM.ApplicationUser.CompanyId;
+                }
+                if (oldRole == SD.Role_Company)
+                {
+                    applicationUser.CompanyId = null;
+                }
+
+                _dbContext.SaveChanges();
+
+                _userManager.RemoveFromRoleAsync(applicationUser, oldRole).GetAwaiter().GetResult();
+                _userManager.AddToRoleAsync(applicationUser, roleManagementVM.ApplicationUser.Role).GetAwaiter().GetResult();
+            }
+            else
+            {
+                if (oldRole == SD.Role_Company && applicationUser.CompanyId != roleManagementVM.ApplicationUser.CompanyId)
+                {
+                    applicationUser.CompanyId = roleManagementVM.ApplicationUser.CompanyId;
+                    _dbContext.ApplicationUsers.Update(applicationUser);
+                    _dbContext.SaveChanges();
+                }
+            }
+
+            return RedirectToAction("Index");
+        }
+
 
         #region API CALLS
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            List<ApplicationUser> userLIst = _dbContext.ApplicationUsers.Include(a => a.Company).ToList();
+            List<ApplicationUser> userList = _dbContext.ApplicationUsers.Include(a => a.Company).ToList();
             var userRoles = _dbContext.UserRoles.ToList();
             var roles = _dbContext.Roles.ToList();
 
-            foreach (var user in userLIst)
+            foreach (var user in userList)
             {
                 var roleId = userRoles.FirstOrDefault(u => u.UserId == user.Id).RoleId;
                 user.Role = roles.FirstOrDefault(r => r.Id == roleId).Name;
@@ -49,7 +119,7 @@ namespace BespokeBooksWeb.Areas.Admin.Controllers
                 }
             }
 
-            return Json(new { data = userLIst });
+            return Json(new { data = userList });
         }
 
         [HttpPost]
