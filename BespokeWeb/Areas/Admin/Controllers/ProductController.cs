@@ -53,42 +53,17 @@ namespace BespokeBooksWeb.Areas.Admin.Controllers
             else
             {
                 // Update
-                productVM.Product = _unitOfWork.ProductRepo.Get(p => p.Id == id);
+                productVM.Product = _unitOfWork.ProductRepo.Get(p => p.Id == id, includeProperties: "ProductImages");
                 return View(productVM);
             }
 
         }
 
         [HttpPost]
-        public IActionResult Upsert(ProductVM productVM, IFormFile? file)
+        public IActionResult Upsert(ProductVM productVM, List<IFormFile>? files)
         {
             if (ModelState.IsValid)
             {
-                string wwwRootPath = _webHostEnvironment.WebRootPath;
-                if (file != null)
-                {
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    string productPath = Path.Combine(wwwRootPath, @"images\product");
-
-                    if (!string.IsNullOrEmpty(productVM.Product.ImageUrl))
-                    {
-                        // Delete the old image
-                        var oldImagePath = Path.Combine(wwwRootPath, productVM.Product.ImageUrl.TrimStart('\\'));
-
-                        if (System.IO.File.Exists(oldImagePath)) 
-                        {
-                            System.IO.File.Delete(oldImagePath);
-                        }
-                    }
-
-                    using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
-                    {
-                        file.CopyTo(fileStream);
-                    }
-
-                    productVM.Product.ImageUrl = @"\images\product\" + fileName;
-                }
-
                 if (productVM.Product.Id == 0)
                 {
                     _unitOfWork.ProductRepo.Add(productVM.Product);
@@ -100,7 +75,40 @@ namespace BespokeBooksWeb.Areas.Admin.Controllers
 
                 _unitOfWork.Save();
 
-                TempData["Success"] = "Product created successfully!";
+
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                if (files != null)
+                {
+                    foreach (IFormFile file in files) 
+                    {
+                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                        string productPath = @"images\products\product-" + productVM.Product.Id;
+                        string finalPath = Path.Combine(wwwRootPath, productPath);
+                    
+                        if (!Directory.Exists(finalPath))
+                            Directory.CreateDirectory(finalPath);
+
+                        using (var fileStream = new FileStream(Path.Combine(finalPath, fileName), FileMode.Create)) 
+                            file.CopyTo(fileStream);
+
+                        ProductImage productImage = new ProductImage()
+                        {
+                            ImageUrl = @"\" + productPath + @"\" + fileName,
+                            ProductId = productVM.Product.Id,
+                        };
+
+                        if (productVM.Product.ProductImages == null)
+                            productVM.Product.ProductImages = new List<ProductImage>();
+
+                        productVM.Product.ProductImages.Add(productImage);
+
+                    }
+
+                    _unitOfWork.ProductRepo.Update(productVM.Product);
+                    _unitOfWork.Save();
+                }
+
+                TempData["Success"] = "Product created/updated successfully!";
 
                 return RedirectToAction("Index");
             }
@@ -115,6 +123,30 @@ namespace BespokeBooksWeb.Areas.Admin.Controllers
 
                 return View(productVM);
             }
+        }
+
+        public IActionResult DeleteImage(int imageId)
+        {
+            var imageToBeDeleted = _unitOfWork.ProductImageRepo.Get(i => i.Id == imageId);
+            int productId = imageToBeDeleted.ProductId;
+
+            if (imageToBeDeleted != null)
+            {
+                if (!string.IsNullOrEmpty(imageToBeDeleted.ImageUrl))
+                {
+                    var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, imageToBeDeleted.ImageUrl.TrimStart('\\'));
+
+                    if (System.IO.File.Exists(oldImagePath))
+                        System.IO.File.Delete(oldImagePath);
+                }
+
+                _unitOfWork.ProductImageRepo.Remove(imageToBeDeleted);
+                _unitOfWork.Save();
+
+                TempData["success"] = "Deleted Successfully!";
+            }
+
+            return RedirectToAction(nameof(Upsert), new { id = productId });
         }
 
 
@@ -136,13 +168,13 @@ namespace BespokeBooksWeb.Areas.Admin.Controllers
                 return Json(new { success = false, message = "Error while deleting!" });
             }
 
-            // Delete the old image
-            var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, productToBeDeleted.ImageUrl.TrimStart('\\'));
+            //// Delete the old image
+            //var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, productToBeDeleted.ImageUrl.TrimStart('\\'));
 
-            if (System.IO.File.Exists(oldImagePath))
-            {
-                System.IO.File.Delete(oldImagePath);
-            }
+            //if (System.IO.File.Exists(oldImagePath))
+            //{
+            //    System.IO.File.Delete(oldImagePath);
+            //}
 
             _unitOfWork.ProductRepo.Remove(productToBeDeleted);
             _unitOfWork.Save();

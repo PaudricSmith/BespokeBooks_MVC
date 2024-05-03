@@ -15,6 +15,7 @@ namespace BespokeBooks.DataAccess.Repository
         public IApplicationUserRepository ApplicationUserRepo {  get; private set; }
         public IOrderHeaderRepository OrderHeaderRepo { get; private set; }
         public IOrderDetailRepository OrderDetailRepo { get; private set; }
+        public IProductImageRepository ProductImageRepo {  get; private set; }
 
 
         public UnitOfWork(ApplicationDbContext dbContext) 
@@ -28,6 +29,7 @@ namespace BespokeBooks.DataAccess.Repository
             ApplicationUserRepo = new ApplicationUserRepository(_dbContext);
             OrderHeaderRepo = new OrderHeaderRepository(_dbContext);
             OrderDetailRepo = new OrderDetailRepository(_dbContext);
+            ProductImageRepo = new ProductImageRepository(_dbContext);
         }
 
 

@@ -30,11 +30,7 @@ namespace BespokeBooks.DataAccess.Repository
                 productFromDatabase.Description = product.Description;
                 productFromDatabase.CategoryId = product.CategoryId;
                 productFromDatabase.Author = product.Author;
-
-                if (productFromDatabase.ImageUrl != null) 
-                {
-                    productFromDatabase.ImageUrl = product.ImageUrl;
-                }
+                productFromDatabase.ProductImages = product.ProductImages;
             }
         }
     }

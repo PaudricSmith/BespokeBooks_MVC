@@ -11,6 +11,7 @@ namespace BespokeBooks.DataAccess.Repository.IRepository
         IApplicationUserRepository ApplicationUserRepo { get; }
         IOrderHeaderRepository OrderHeaderRepo { get; }
         IOrderDetailRepository OrderDetailRepo { get; }
+        IProductImageRepository ProductImageRepo { get; }
 
         void Save();
     }
