@@ -65,13 +65,9 @@ namespace BespokeBooksWeb.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 if (productVM.Product.Id == 0)
-                {
                     _unitOfWork.ProductRepo.Add(productVM.Product);
-                }
                 else
-                {
                     _unitOfWork.ProductRepo.Update(productVM.Product);
-                }
 
                 _unitOfWork.Save();
 
@@ -168,13 +164,19 @@ namespace BespokeBooksWeb.Areas.Admin.Controllers
                 return Json(new { success = false, message = "Error while deleting!" });
             }
 
-            //// Delete the old image
-            //var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, productToBeDeleted.ImageUrl.TrimStart('\\'));
+            string productPath = @"images\products\product-" + id;
+            string finalPath = Path.Combine(_webHostEnvironment.WebRootPath, productPath);
 
-            //if (System.IO.File.Exists(oldImagePath))
-            //{
-            //    System.IO.File.Delete(oldImagePath);
-            //}
+            if (Directory.Exists(finalPath))
+            {
+                string[] filePaths = Directory.GetFiles(finalPath);
+                foreach (string filePath in filePaths)
+                {
+                    System.IO.File.Delete(filePath);
+                }
+
+                Directory.Delete(finalPath);
+            }
 
             _unitOfWork.ProductRepo.Remove(productToBeDeleted);
             _unitOfWork.Save();
