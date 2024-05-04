@@ -9,11 +9,11 @@
 
     switch (status)
     {
-        case "inprocess":
-            inprocess = "active text-white bg-primary";
-            break;
         case "pending":
             pending = "active text-white bg-primary";
+            break;
+        case "inprocess":
+            inprocess = "active text-white bg-primary";
             break;
         case "completed":
             completed = "active text-white bg-primary";
@@ -28,7 +28,7 @@
 }
 
 
-<div class="card shadow border-0 mt-4">
+<div class="card shadow border-0 my-4">
     <div class="card-header bg-secondary bg-gradient ml-0 py-3">
         <div class="row">
             <div class="col-12 text-center">
@@ -59,6 +59,7 @@
                 </a>
             </ul>
         </div>
+
         <table id="tblData" class="table table-bordered table-striped" style="width:100%">
             <thead>
                 <tr>
@@ -72,6 +73,7 @@
                 </tr>
             </thead>
         </table>
+
     </div>
 </div>
 

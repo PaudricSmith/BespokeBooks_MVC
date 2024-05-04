@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace BespokeBooksWeb.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin")] 
     [Authorize(Roles = SD.Role_Admin)]
     public class ProductController : Controller
     {

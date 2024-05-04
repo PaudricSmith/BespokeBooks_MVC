@@ -23,16 +23,16 @@ namespace BespokeBooksWeb.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            //var claimsIdentity = (ClaimsIdentity)User.Identity;
+            //var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
-            if (claim != null)
-            {
-                HttpContext.Session.SetInt32(SD.SessionCart,
-                    _unitOfWork.ShoppingCartRepo.GetAll(s => s.ApplicationUserId == claim.Value).Count());
-            }
+            //if (claim != null)
+            //{
+            //    HttpContext.Session.SetInt32(SD.SessionCart,
+            //        _unitOfWork.ShoppingCartRepo.GetAll(s => s.ApplicationUserId == claim.Value).Count());
+            //}
             
-            IEnumerable<Product> productList = _unitOfWork.ProductRepo.GetAll(includeProperties: "Category");
+            IEnumerable<Product> productList = _unitOfWork.ProductRepo.GetAll(includeProperties: "Category,ProductImages");
             return View(productList);
         }
 
@@ -40,7 +40,7 @@ namespace BespokeBooksWeb.Areas.Customer.Controllers
         {
             ShoppingCart shoppingCart = new()
             {
-                Product = _unitOfWork.ProductRepo.Get(p => p.Id == productId, includeProperties: "Category"),
+                Product = _unitOfWork.ProductRepo.Get(p => p.Id == productId, includeProperties: "Category,ProductImages"),
                 Count = 1,
                 ProductId = productId
             };
